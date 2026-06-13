@@ -1,0 +1,66 @@
+name: Update ROVER catalogue
+
+on:
+  schedule:
+    # GitHub cron is UTC. 19:30 UTC Mon & Thu ≈ early morning Tue/Fri in Sydney.
+    # Adjust if you want a different Sydney time (Sydney = UTC+10, or UTC+11 in DST).
+    - cron: '30 19 * * 1,4'
+  workflow_dispatch: {}   # allows manual "Run workflow" from the Actions tab
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never run two builds at once; let a running publish finish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Playwright (Chromium)
+        run: |
+          npm install
+          npx playwright install --with-deps chromium
+
+      - name: Scrape ROVER -> payload.json
+        run: node scrape.mjs
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build groups.json and index.html
+        run: |
+          python build_groups.py
+          python build_html.py
+          mkdir -p _site
+          cp index.html _site/index.html
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site        # publishes only index.html to Pages
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
