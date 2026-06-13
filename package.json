@@ -1,0 +1,13 @@
+{
+  "name": "bestjdm-catalogue",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Autonomous ROVER approved-models catalogue (scrape -> build -> GitHub Pages)",
+  "scripts": {
+    "scrape": "node scrape.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.48.0"
+  }
+}
