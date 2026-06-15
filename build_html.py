@@ -10,7 +10,8 @@ html = """<!DOCTYPE html>
 <style>
 :root { color-scheme: light; }
 * { box-sizing: border-box; }
-body { margin:0; background:#ffffff; color:#1a2433; font:14px/1.45 'Segoe UI',Arial,sans-serif; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:#ffffff; color:#1a2433; font:14px/1.45 'Segoe UI',Arial,sans-serif; overflow-x:hidden; -webkit-overflow-scrolling:touch; }
 header { position:sticky; top:0; z-index:5; background:#fff; border-bottom:1px solid #dde4ec; padding:14px 18px 12px; }
 h1 { margin:0 0 2px; font-size:17px; color:#1f4e78; }
 .sub { color:#6b7a8d; font-size:12px; margin-bottom:10px; }
@@ -27,10 +28,26 @@ main { padding:16px 18px 30px; max-width:1100px; margin:0 auto; }
 .card h2 .bd { color:#6b7a8d; font-weight:500; font-size:13px; white-space:nowrap; }
 table.sev { width:100%; border-collapse:collapse; margin:10px 0 4px; font-size:12.5px; }
 table.sev th { text-align:left; color:#6b7a8d; font-weight:600; padding:4px 8px; border-bottom:1px solid #e4eaf1; white-space:nowrap; }
-table.sev td { padding:4px 8px; border-bottom:1px solid #f0f3f7; vertical-align:top; }
+table.sev td { padding:4px 8px; border-bottom:1px solid #f0f3f7; vertical-align:top; word-break:break-word; }
 .none { text-align:center; color:#8294a7; padding:50px 20px; }
 .none .big { font-size:15px; margin-bottom:6px; color:#5d6f83; }
 footer { max-width:1100px; margin:0 auto; padding:6px 18px 26px; color:#9aa7b5; font-size:11px; line-height:1.5; }
+@media (max-width:600px) {
+  header { padding:10px 12px 10px; }
+  h1 { font-size:15px; }
+  .sub { font-size:11px; }
+  .controls { grid-template-columns:1fr 1fr; gap:8px; }
+  /* font-size 16px on inputs prevents iOS auto-zoom on focus */
+  select, input[type=search] { font-size:16px; padding:10px 10px; }
+  .ctl label { font-size:10px; }
+  main { padding:12px 12px 24px; }
+  .card { padding:12px 12px; margin-bottom:12px; }
+  .card h2 { font-size:14px; }
+  .card h2 .bd { display:block; white-space:normal; margin-top:2px; }
+  table.sev { font-size:12px; }
+  table.sev th, table.sev td { padding:4px 6px; }
+  footer { padding:6px 12px 22px; }
+}
 </style></head><body>
 <header>
   <h1>Approved Models Search — Specialist &amp; Enthusiast Vehicles</h1>
