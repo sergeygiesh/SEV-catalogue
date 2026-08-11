@@ -8,7 +8,7 @@ on:
   workflow_dispatch: {}   # allows manual "Run workflow" from the Actions tab
 
 permissions:
-  contents: read
+  contents: write   # needed for the keepalive commit that prevents 60-day auto-disable
   pages: write
   id-token: write
 
@@ -23,6 +23,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      # Small commit each run so the repo is never "inactive" for 60 days.
+      # This keeps the scheduled (cron) workflow from being auto-disabled by GitHub.
+      # Runs first (if: always via being an early step) so it works even if scraping later fails.
+      - name: Keepalive commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          date -u +"Last automated run: %Y-%m-%dT%H:%M:%SZ" > .last-run
+          git add .last-run
+          git commit -m "chore: keepalive $(date -u +%F)" || echo "nothing to commit"
+          git push origin "HEAD:${GITHUB_REF_NAME}" || echo "push skipped"
 
       - name: Setup Node
         uses: actions/setup-node@v4
